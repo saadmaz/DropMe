@@ -8,15 +8,20 @@ CORS(app)
 # This is the "Entry Point" Vercel looks for
 @app.route('/api/calculate', methods=['POST'])
 def handle_calculate():
-    data = request.json
-    # The frontend sends lowercase keys, logic expects capitalized city names [cite: 97, 190]
-    result = logic.calculate_trip(
-        data['from'], 
-        data['to'], 
-        data['mode'], 
-        data.get('promoCode')
-    )
-    return jsonify(result)
+    try:
+        data = request.json
+        # The frontend sends lowercase keys, logic expects capitalized city names [cite: 97, 190]
+        result = logic.calculate_trip(
+            data['from'], 
+            data['to'], 
+            data['mode'], 
+            data.get('promoCode')
+        )
+        return jsonify(result)
+    except Exception as e:
+        return jsonify({
+            "error": str(e)
+        }), 500
 
 @app.route('/api/validate-promo', methods=['POST'])
 def handle_validate():
