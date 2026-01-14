@@ -195,8 +195,18 @@ const Index = () => {
       </div>
 
       <footer className="mt-8 text-center text-sm text-muted-foreground">
-        <p>© 2026 DROPME - Kingdom of Miranda Transportation Authority</p>
-      </footer>
+        <p>
+          © 2026 DROPME - Designed and Developed by{" "}
+          <a 
+            href="https://saadmaz.com" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="hover:text-primary transition-colors underline-offset-4 hover:underline"
+          >
+            Saad Mazhar
+          </a>
+        </p>
+      </footer>    
     </div>
   );
 };
