@@ -1,6 +1,6 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
-import api.logic as logic # Note: Updated import to reflect 'api' folder structure
+import logic 
 
 app = Flask(__name__)
 CORS(app) 
