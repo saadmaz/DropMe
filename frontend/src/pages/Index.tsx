@@ -9,7 +9,7 @@ import { Receipt, ReceiptData } from "@/components/Receipt";
 import { RecentTrips, Trip } from "@/components/RecentTrips";
 import { useToast } from "@/hooks/use-toast";
 
-const API_BASE_URL = "/api";
+const API_BASE_URL = "http://127.0.0.1:5000/api";
 
 const Index = () => {
   const { toast } = useToast();
