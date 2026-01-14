@@ -5,34 +5,38 @@ import logic
 app = Flask(__name__)
 CORS(app) 
 
-# This is the "Entry Point" Vercel looks for
 @app.route('/api/calculate', methods=['POST'])
 def handle_calculate():
     try:
         data = request.json
-        # The frontend sends lowercase keys, logic expects capitalized city names [cite: 97, 190]
+        if not data:
+            return jsonify({"error": "No data received"}), 400
+
+        # Use .get() with defaults to prevent crashes
         result = logic.calculate_trip(
-            data['from'], 
-            data['to'], 
-            data['mode'], 
-            data.get('promoCode')
+            departure=data.get('from', ''), 
+            destination=data.get('to', ''), 
+            mode=data.get('mode', 'trishaw'), 
+            promo_code=data.get('promoCode')
         )
+        
+        # If logic returned an error dictionary, pass it through
+        if "error" in result:
+            return jsonify(result), 400
+            
         return jsonify(result)
     except Exception as e:
-        return jsonify({
-            "error": str(e)
-        }), 500
+        # This will now show up clearly in Vercel Logs
+        print(f"Server Error: {str(e)}")
+        return jsonify({"error": str(e)}), 500
 
 @app.route('/api/validate-promo', methods=['POST'])
 def handle_validate():
-    # Promo codes in the original system are case-insensitive [cite: 98]
-    code = request.json.get('code', '').lower()
-    # Check against the promo dictionary in logic.py [cite: 127, 234]
+    data = request.json or {}
+    code = data.get('code', '').lower().strip()
     valid = code in logic.promo_codes
-    # Return the KMD reduction value [cite: 84]
     discount = logic.promo_codes.get(code, 0)
     return jsonify({"valid": valid, "discount": discount})
 
-# Keep this for local testing only
 if __name__ == '__main__':
     app.run(debug=True, port=5000)
