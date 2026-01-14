@@ -10,17 +10,17 @@ cities_price_list = {
     'Zuhar': {'Alvin': 20, 'Jamz': 40, 'Razi': 40, 'Mali': 20, 'Zuhar': 0}
 }
 
-vehicle_prices = {'trishaw': 1, 'car': 2, 'van': 3} #
-promo_codes = {f"pro{i}": i for i in range(1, 16)} #
+vehicle_prices = {'trishaw': 1, 'car': 2, 'van': 3}
+promo_codes = {f"pro{i}": i for i in range(1, 16)}
 
 def calculate_trip(departure, destination, mode, promo_code=None):
     try:
-        # Standardize inputs: Remove spaces and Capitalize
-        start = str(departure).strip().capitalize()
-        end = str(destination).strip().capitalize()
-        vehicle = str(mode).strip().lower()
+        # Standardize inputs: Remove spaces and Force Capitalization
+        start = str(departure or "").strip().capitalize()
+        end = str(destination or "").strip().capitalize()
+        vehicle = str(mode or "trishaw").strip().lower()
 
-        # Check if cities exist to prevent KeyError crash
+        # Validation to prevent KeyError crash
         if start not in cities_price_list or end not in cities_price_list[start]:
             return {"error": f"Invalid route: {start} to {end}"}
 
@@ -35,10 +35,9 @@ def calculate_trip(departure, destination, mode, promo_code=None):
         # Promo validation
         if promo_code:
             clean_code = str(promo_code).strip().lower()
-            if clean_code in promo_codes:
-                promo_val = promo_codes[clean_code]
+            promo_val = promo_codes.get(clean_code, 0)
         else:
-            # 33% chance for 5 KMD reduction
+            # 33% chance for random 5 KMD reduction
             if random.randint(1, 3) == 1:
                 random_val = 5
                 
@@ -47,7 +46,7 @@ def calculate_trip(departure, destination, mode, promo_code=None):
         now = datetime.now()
         return {
             "timestamp": now.strftime("%Y-%m-%d %H:%M:%S"),
-            "filename": f"{now.strftime('%Y%m%d_%H%M%S')}_{random.randint(1000,9999)}.txt",
+            "filename": f"{now.strftime('%Y%m%d_%H%M%S')}_{random.randint(1000, 9999)}.txt",
             "from": start,
             "to": end,
             "mode": vehicle,
